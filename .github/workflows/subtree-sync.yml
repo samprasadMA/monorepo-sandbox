@@ -31,7 +31,8 @@ jobs:
         run: git fetch github-node-api
 
       - name: Pull from main branch
-        run: git subtree pull --prefix=samprasadMA/github-node-api github-node-api main --squash
+        run: git subtree add --prefix=samprasadMA/github-node-api github-node-api main --squash
+
 
       - name: Create Pull Request on monorepo
         uses: peter-evans/create-pull-request@v5
