@@ -1,38 +1,32 @@
-name: Sync Sub-tree
-
+name: Sync git sub-tree & Create Pull Request
+​
 on:
-  push:
-    branches:
-      - main
-
+  schedule:
+    - cron:  '*/1 * * * *' # Runs at 09:00 UTC on Mon
+​
+  workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
+​
 jobs:
-  sync:
+​
+  sync-github-node-api:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout target repository
-        uses: actions/checkout@v2
-
-      - name: Checkout source repository
-        uses: actions/checkout@v2
-        with:
-          repository: samprasadMA/github-node-api
-          ref: main
-          path: source-repo
-
-      - name: Sync sub-tree
-        run: |
-          git config --global user.name "samprasadMA"
-          git config --global user.email "sam.prasad@moodys.com"
-          git subtree add --prefix=assessment-mfe/ https://github.com/samprasadMA/github-node-api main --squash
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: Sync sub-tree changes
-          title: Sync sub-tree changes
-          body: |
-            This pull request syncs the sub-tree changes from the source repository.
-          branch: sync-sub-tree
-          base: main
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.ACTION_TOKEN }}
+        submodules: true
+    - name: Configure identity
+      run: |
+        git config --global user.email "sam.prasad@moodys.com"
+        git config --global user.name "samprasadMA"
+    - name: Add github-node-api as remote
+      run: git remote add github-node-api https://github.com/samprasadMA/github-node-api.git
+    - name: Check remotes
+      run: git remote -v
+    - name: Fetch github-node-api
+      run: git fetch github-node-api        
+    - name: pull from main branch
+      run: git subtree pull --prefix=samprasadMA/github-node-api github-node-api main --squash
+    - name: Create Pull Request on monorepo
+      uses: peter-evans/create-pull-request@v4.0.4
