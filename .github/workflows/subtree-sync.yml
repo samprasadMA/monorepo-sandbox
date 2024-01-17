@@ -1,8 +1,9 @@
 name: Sync git sub-tree & Create Pull Request
 
 on:
-  schedule:
-    - cron: '*/5 * * * *'
+  push:
+    branches:
+      - main
 
 jobs:
   sync-github-node-api:
