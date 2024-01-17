@@ -37,7 +37,7 @@ jobs:
       - name: Create Pull Request on monorepo
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: Sync sub-tree changes
           title: Sync sub-tree changes
           body: |
