@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.ACTION_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           submodules: true
 
       - name: Configure identity
@@ -34,7 +34,7 @@ jobs:
         run: git subtree pull --prefix=samprasadMA/github-node-api github-node-api main --squash
 
       - name: Create Pull Request on monorepo
-        uses: peter-evans/create-pull-request@v4.0.4
+        uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: Sync sub-tree changes
