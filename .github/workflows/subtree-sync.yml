@@ -1,0 +1,38 @@
+name: Sync Sub-tree
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout target repository
+        uses: actions/checkout@v2
+
+      - name: Checkout source repository
+        uses: actions/checkout@v2
+        with:
+          repository: samprasadMA/github-node-api
+          ref: main
+          path: source-repo
+
+      - name: Sync sub-tree
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git subtree add --prefix=assessment-mfe/ source-repo main --squash
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: Sync sub-tree changes
+          title: Sync sub-tree changes
+          body: |
+            This pull request syncs the sub-tree changes from the source repository.
+          branch: sync-sub-tree
+          base: main
